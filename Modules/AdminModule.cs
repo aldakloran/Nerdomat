@@ -1,14 +1,13 @@
 using System.Threading.Tasks;
-using Discord;
 using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
-using static Nerdomat.Tools.Atributes;
+using Nerdomat.Tools;
 
 namespace Nerdomat.Modules
 {
     [ModuleActive(true)]
-    [ModuleName("Narzędzia admina")]
+    [ModuleName("Narzędzia administracyjne")]
     public class AdminModule : ModuleBase<SocketCommandContext>
     {
         [ModuleAdmin]

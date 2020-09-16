@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using System.Linq;
+using Nerdomat.Tools;
 
 namespace Nerdomat.Services
 {
@@ -31,6 +33,7 @@ namespace Nerdomat.Services
         {
             // Register modules that are public and inherit ModuleBase<T>.
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+            await _discord.SetGameAsync("!pomoc", @"https://github.com/aldakloran/Nerdomat", ActivityType.Streaming);
         }
 
         public async Task MessageReceivedAsync(SocketMessage rawMessage)
@@ -47,6 +50,17 @@ namespace Nerdomat.Services
             if (!message.HasCharPrefix('!', ref argPos)) return;
 
             var context = new SocketCommandContext(_discord, message);
+
+            var onlyAdminCommand = _commands.Search(context, argPos).Commands
+                                            .Select(x => x.Command)
+                                            .All(x => x.OnyAdminCommand());
+
+            if (onlyAdminCommand && !context.User.IsAdmin())
+            {
+                await context.Channel.SendMessageAsync($"{context.User.Mention} Nie masz uprawnień do tej komendy");
+                return;
+            }
+
             // Perform the execution of the command. In this method,
             // the command service will perform precondition and parsing check
             // then execute the command if one is matched.
@@ -57,6 +71,10 @@ namespace Nerdomat.Services
 
         public async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
+            // log command to console
+            var msg = $"[{DateTime.Now} - {command.GetValueOrDefault()?.Module.Name ?? "Commands"}]: {context.User} {context.Message.Content}";
+            Console.WriteLine(msg);
+
             // command is unspecified when there was a search failure (command not found); we don't care about these errors
             if (!command.IsSpecified)
                 return;

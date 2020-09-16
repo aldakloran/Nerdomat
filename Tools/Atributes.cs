@@ -2,32 +2,29 @@ using System;
 
 namespace Nerdomat.Tools
 {
-    public class Atributes
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    public class ModuleName : Attribute
     {
-        [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-        public class ModuleName : Attribute
+        private string name;
+        public ModuleName(string name)
         {
-            private string name;
-            public ModuleName(string name)
-            {
-                this.name = name;
-            }
+            this.name = name;
         }
+    }
 
-        [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-        public class ModuleActive : Attribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    public class ModuleActive : Attribute
+    {
+        private bool active;
+        public ModuleActive(bool active)
         {
-            private bool active;
-            public ModuleActive(bool active)
-            {
-                this.active = active;
-            }
+            this.active = active;
         }
+    }
 
-        [AttributeUsage(AttributeTargets.Method)]
-        public class ModuleAdmin : Attribute
-        {
-            public ModuleAdmin() { }
-        }
+    [AttributeUsage(AttributeTargets.Method)]
+    public class ModuleAdmin : Attribute
+    {
+        public ModuleAdmin() { }
     }
 }

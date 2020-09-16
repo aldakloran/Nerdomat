@@ -23,8 +23,8 @@ namespace Nerdomat.Tools
     }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class ModuleAdmin : Attribute
+    public class MethodAdmin : Attribute
     {
-        public ModuleAdmin() { }
+        public MethodAdmin() { }
     }
 }

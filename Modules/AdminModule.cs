@@ -10,7 +10,7 @@ namespace Nerdomat.Modules
     [ModuleName("Narzędzia administracyjne")]
     public class AdminModule : ModuleBase<SocketCommandContext>
     {
-        [ModuleAdmin]
+        [MethodAdmin]
         [Command("cleanreactsf"), Alias("cleanf"), Summary("Czyści reacty")]
         public async Task CleanUsersReacts(ulong channel, params ulong[] masIds)
         {

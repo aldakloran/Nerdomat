@@ -48,7 +48,7 @@ namespace Nerdomat.Tools
 
                     var name = cmd.CustomAttributes.FirstOrDefault(x => x.AttributeType == typeof(CommandAttribute))?.ConstructorArguments.FirstOrDefault().Value?.ToString() ?? string.Empty;
                     var summary = cmd.CustomAttributes.FirstOrDefault(x => x.AttributeType == typeof(SummaryAttribute))?.ConstructorArguments.FirstOrDefault().Value?.ToString() ?? string.Empty;
-                    var adminOlny = cmd.CustomAttributes.Any(x => x.AttributeType == typeof(ModuleAdmin));
+                    var adminOlny = cmd.CustomAttributes.Any(x => x.AttributeType == typeof(MethodAdmin));
 
                     var cmdDescription = new Command
                     {

@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Nerdomat.Tools
 {
@@ -59,6 +63,33 @@ namespace Nerdomat.Tools
                 : Empty(LengthEmpty);
 
             return $"{text}{empty}";
+        }
+
+        public static IEnumerable<string> DiscordMessageSplit(this string message)
+        {
+            const int maxMessageLength = 2000;
+            if (message.Length >= maxMessageLength)
+            {
+                var sb = new StringBuilder();
+                foreach (var sentence in Regex.Split(message, Environment.NewLine))
+                {
+                    if (sb.Length + sentence.Length < maxMessageLength)
+                    {
+                        sb.AppendLine(sentence);
+                    }
+                    else
+                    {
+                        yield return sb.ToString();
+                        sb.Clear();
+                        sb.AppendLine(sentence);
+                    }
+                }
+                yield return sb.ToString();
+            }
+            else
+            {
+                yield return message;
+            }
         }
     }
 }

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.Options;
+using Nerdomat.Models;
 using Nerdomat.Tools;
 
 namespace Nerdomat.Modules
@@ -14,6 +16,9 @@ namespace Nerdomat.Modules
     [ModuleName("Pomoc")]
     public class HelpModule : ModuleBase<SocketCommandContext>
     {
+        // Dependency Injection will fill this value in for us
+        private readonly IOptionsMonitor<Config> _config;
+
         [Command("pomoc")]
         [Summary("Pomoc - wszystkie komendy")]
         public async Task Help()
@@ -21,35 +26,11 @@ namespace Nerdomat.Modules
             var user = Context.User as SocketGuildUser;
 
             var msgFull = CommandsCrawler.GetCommandsList(user.IsAdmin());
-            var msgList = new List<string>();
-            if (msgFull.Length >= 2000)
-            {
-                var sb = new StringBuilder();
-                foreach (var sentence in Regex.Split(msgFull, Environment.NewLine))   // jebany linux
-                {
-                    if (sb.Length + sentence.Length < 2000)
-                    {
-                        sb.AppendLine(sentence);
-                    }
-                    else
-                    {
-                        msgList.Add(sb.ToString());
-                        sb.Clear();
-                        sb.AppendLine(sentence);
-                    }
-                }
-                msgList.Add(sb.ToString());
-            }
-            else
-            {
-                msgList.Add(msgFull);
-            }
 
             await Context.Message.DeleteAsync();
-            foreach (var msg in msgList)
-            {
+            foreach (var msg in msgFull.DiscordMessageSplit())
                 await user.SendMessageAsync(msg);
-            }
+
         }
     }
 }

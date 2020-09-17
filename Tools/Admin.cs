@@ -21,7 +21,7 @@ namespace Nerdomat.Tools
 
         public static bool OnyAdminCommand(this CommandInfo ci)
         {
-            return ci.Attributes.Any(x => x.GetType() == typeof(ModuleAdmin));
+            return ci.Attributes.Any(x => x.GetType() == typeof(MethodAdmin));
         }
     }
 }

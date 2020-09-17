@@ -2,13 +2,14 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
 using Nerdomat.Services;
 using System.IO;
-
+using Nerdomat.Models;
 
 namespace Nerdomat
 {
@@ -56,6 +57,11 @@ namespace Nerdomat
                 .AddSingleton<CommandService>()
                 .AddSingleton<CommandHandlingService>()
                 .AddSingleton<HttpClient>()
+                .Configure<Config>(opt =>
+                {
+                    opt.MyGuildId = 253857543170818049;
+                    opt.TestChannelId = 272326889169747973;
+                })
                 .BuildServiceProvider();
         }
     }

@@ -40,19 +40,19 @@ namespace Nerdomat.Tools
                     throw new ArgumentOutOfRangeException(nameof(decorator), decorator, null);
             }
         }
+    }
 
-        public enum Decorator
-        {
-            Italics,
-            Bold,
-            Bold_Italics,
-            Underline,
-            Underline_italics,
-            Underline_bold,
-            underline_bold_italics,
-            Strikethrough,
-            Inline_code,
-            Block_code
-        }
+    public enum Decorator
+    {
+        Italics,
+        Bold,
+        Bold_Italics,
+        Underline,
+        Underline_italics,
+        Underline_bold,
+        underline_bold_italics,
+        Strikethrough,
+        Inline_code,
+        Block_code
     }
 }

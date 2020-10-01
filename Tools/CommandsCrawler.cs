@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Discord.Commands;
-using static Nerdomat.Tools.DiscordTextDecorator;
 
 namespace Nerdomat.Tools
 {

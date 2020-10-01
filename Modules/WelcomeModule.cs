@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Nerdomat.Models;
+using Nerdomat.Tools;
 
 namespace Nerdomat.Modules
 {
@@ -27,8 +28,22 @@ namespace Nerdomat.Modules
 
         private async Task UserJoinedEvent(SocketGuildUser arg)
         {
-            const string msg = "test";
-            await arg.SendMessageAsync(msg);
+            var sb = new StringBuilder();
+            
+            sb.AppendLine($"Witaj na Discordzie gildi {"N E R D".Decorate(Decorator.Underline)}".Decorate(Decorator.Bold));
+            sb.AppendLine("https://www.gildia-nerd.pl/");
+            sb.AppendLine("lub do kontaktu z Oficerami");
+            sb.AppendLine(string.Empty);
+            sb.AppendLine("Do mówienia na kanale raidowym wymagane jest Push-to-talk".Decorate(Decorator.Underline));
+            sb.AppendLine("W przypadku jakichkolwiek pytań zachęcamy do kontaktu :)");
+            sb.AppendLine(string.Empty);
+            sb.AppendLine(string.Empty);
+            sb.AppendLine($"{"Jeżeli chcesz poznać funkcję bota zapraszam do wykorzystania komendy".Decorate(Decorator.Italics)} {"!Pomoc".Decorate(Decorator.Bold)}");
+
+            var role = _discord.GetGuild(_config.CurrentValue.MyGuildId).GetRole(_config.CurrentValue.DefaultUserRole);
+            
+            await arg.AddRoleAsync(role);
+            await arg.SendMessageAsync(sb.ToString());
         }
     }
 }

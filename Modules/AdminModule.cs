@@ -2,6 +2,8 @@ using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
+using Microsoft.Extensions.Options;
+using Nerdomat.Models;
 using Nerdomat.Tools;
 
 namespace Nerdomat.Modules
@@ -10,6 +12,9 @@ namespace Nerdomat.Modules
     [ModuleName("Narzędzia administracyjne")]
     public class AdminModule : ModuleBase<SocketCommandContext>
     {
+        // Dependency Injection will fill this value in for us
+        private readonly IOptionsMonitor<Config> _config;
+
         [MethodAdmin]
         [Command("cleanreactsf"), Alias("cleanf"), Summary("Czyści reacty")]
         public async Task CleanUsersReacts(ulong channel, params ulong[] masIds)

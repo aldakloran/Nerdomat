@@ -6,8 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
+using Google.Apis.Sheets.v4;
 using Nerdomat.Services;
 using Nerdomat.Models;
+using Nerdomat.Tools;
 
 namespace Nerdomat
 {
@@ -54,11 +56,20 @@ namespace Nerdomat
                 .AddSingleton<CommandService>()
                 .AddSingleton<CommandHandlingService>()
                 .AddSingleton<HttpClient>()
+                .AddSingleton<GoogleService>()
                 .Configure<Config>(opt =>
                 {
                     opt.MyGuildId = 253857543170818049;
                     opt.TestChannelId = 272326889169747973;
                     opt.DefaultUserRole = 273155982652211200;
+                    opt.GoogleSettings = new GoogleSettings
+                    {
+                        ApplicationName = "Google Sheets API .NET Quickstart",
+                        SpreadsheetId = "1OBHG73kqjPjchancWMItV6d8tFSFIdLaY4Z7ShPEnWU",
+                        ServiceAccountEmail = "nerdbot@quickstart-1555516131984.iam.gserviceaccount.com",
+                        Jsonfile = "quickstart-1555516131984-9827913e7caa.json",
+                        Scopes = new[] { SheetsService.Scope.Spreadsheets }
+                    };
                 })
                 .BuildServiceProvider();
         }

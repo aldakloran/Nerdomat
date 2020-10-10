@@ -5,8 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Nerdomat.Models;
 using Nerdomat.Services;
+using Nerdomat.Tools;
 namespace Nerdomat.Modules
 {
+    [ModuleActive(false)]
     public class FlaskModule : ModuleBase<SocketCommandContext>
     {
         private readonly IOptionsMonitor<Config> _config;

@@ -82,7 +82,8 @@ namespace Nerdomat.Tools
                 sb.AppendLine(string.Empty);
             }
 
-            return sb.ToString();
+            var res = sb.ToString();
+            return string.IsNullOrEmpty(res) ? "Brak komend" : res;
         }
     }
 

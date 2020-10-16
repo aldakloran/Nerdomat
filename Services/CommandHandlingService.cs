@@ -13,6 +13,7 @@ namespace Nerdomat.Services
     public class CommandHandlingService
     {
         private readonly CommandService _commands;
+        private readonly LoggerService _logger;
         private readonly DiscordSocketClient _discord;
         private readonly IServiceProvider _services;
 
@@ -20,6 +21,7 @@ namespace Nerdomat.Services
         {
             _commands = services.GetRequiredService<CommandService>();
             _discord = services.GetRequiredService<DiscordSocketClient>();
+            _logger = services.GetRequiredService<LoggerService>();
             _services = services;
 
             // Hook CommandExecuted to handle post-command-execution logic.
@@ -73,7 +75,7 @@ namespace Nerdomat.Services
         {
             // log command to console
             var msg = $"[{DateTime.Now} - {command.GetValueOrDefault()?.Module.Name ?? "Commands"}]: {context.User} {context.Message.Content}";
-            Console.WriteLine(msg);
+            await _logger.WriteLog(msg);
 
             // command is unspecified when there was a search failure (command not found); we don't care about these errors
             if (!command.IsSpecified)
@@ -85,6 +87,7 @@ namespace Nerdomat.Services
 
             // the command failed, let's notify the user that something happened.
             await context.Channel.SendMessageAsync($"error: {result}");
+            await _logger.WriteLog($"error: {result}");
         }
     }
 }

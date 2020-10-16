@@ -5,6 +5,7 @@ namespace Nerdomat.Models
         public ulong MyGuildId { get; set; }
         public ulong TestChannelId { get; set; }
         public ulong DefaultUserRole { get; set; }
+        public ulong LogChannelId { get; set; }
         public string SettingsDirectory { get; set; }
         public GoogleSettings GoogleSettings { get; set; }
     }

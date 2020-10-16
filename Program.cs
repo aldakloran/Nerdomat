@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -57,11 +58,13 @@ namespace Nerdomat
                 .AddSingleton<CommandHandlingService>()
                 .AddSingleton<HttpClient>()
                 .AddSingleton<GoogleService>()
+                .AddSingleton<LoggerService>()
                 .Configure<Config>(opt =>
                 {
                     opt.MyGuildId = 253857543170818049;
                     opt.TestChannelId = 272326889169747973;
                     opt.DefaultUserRole = 273155982652211200;
+                    opt.LogChannelId = 649975460431921188;
                     opt.GoogleSettings = new GoogleSettings
                     {
                         ApplicationName = "Google Sheets API .NET Quickstart",

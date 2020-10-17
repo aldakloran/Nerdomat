@@ -1,7 +1,9 @@
+using System;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Nerdomat.Models;
 using Nerdomat.Tools;
@@ -12,8 +14,16 @@ namespace Nerdomat.Modules
     [ModuleName("Narzędzia administracyjne")]
     public class AdminModule : ModuleBase<SocketCommandContext>
     {
-        // Dependency Injection will fill this value in for us
         private readonly IOptionsMonitor<Config> _config;
+        private readonly DiscordSocketClient _discord;
+        private readonly IServiceProvider _services;
+
+        public AdminModule(IServiceProvider services, IOptionsMonitor<Config> config)
+        {
+            _discord = services.GetRequiredService<DiscordSocketClient>();
+            _services = services;
+            _config = config;
+        }
 
         [MethodAdmin]
         [Command("cleanreactsf"), Alias("cleanf"), Summary("Czyści reacty")]

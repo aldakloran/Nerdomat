@@ -3,12 +3,13 @@ using System.Threading.Tasks;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Nerdomat.Interfaces;
 using Nerdomat.Models;
 using Nerdomat.Tools;
 
 namespace Nerdomat.Services
 {
-    public class LoggerService
+    public class LoggerService : ILoggerService
     {
         private readonly IOptionsMonitor<Config> _config;
         private readonly DiscordSocketClient _discord;
@@ -24,7 +25,7 @@ namespace Nerdomat.Services
         public async Task WriteLog(string message)
         {
             if (_discord.GetGuild(_config.CurrentValue.MyGuildId).GetChannel(_config.CurrentValue.LogChannelId) is SocketTextChannel channel)
-                await channel.SendMessageAsync(message.Decorate(Decorator.Inline_code));
+                await channel.SendMessageAsync(message.Decorate(Decorator.Block_code));
 
             Console.WriteLine(message);
         }

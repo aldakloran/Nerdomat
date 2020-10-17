@@ -8,6 +8,7 @@ using Discord;
 using Discord.WebSocket;
 using Discord.Commands;
 using Google.Apis.Sheets.v4;
+using Nerdomat.Interfaces;
 using Nerdomat.Services;
 using Nerdomat.Models;
 using Nerdomat.Tools;
@@ -57,8 +58,8 @@ namespace Nerdomat
                 .AddSingleton<CommandService>()
                 .AddSingleton<CommandHandlingService>()
                 .AddSingleton<HttpClient>()
-                .AddSingleton<GoogleService>()
-                .AddSingleton<LoggerService>()
+                .AddSingleton<IGoogleService, GoogleService>()
+                .AddSingleton<ILoggerService, LoggerService>()
                 .Configure<Config>(opt =>
                 {
                     opt.MyGuildId = 253857543170818049;

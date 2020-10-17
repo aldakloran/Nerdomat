@@ -7,6 +7,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Nerdomat.Interfaces;
 using Nerdomat.Models;
 using Nerdomat.Services;
 using Nerdomat.Tools;
@@ -19,14 +20,14 @@ namespace Nerdomat.Modules
         private readonly IOptionsMonitor<Config> _config;
         private readonly DiscordSocketClient _discord;
         private readonly IServiceProvider _services;
-        private readonly GoogleService _googleService;
-        private readonly LoggerService _logger;
+        private readonly IGoogleService _googleService;
+        private readonly ILoggerService _logger;
 
         public FlaskModule(IServiceProvider services, IOptionsMonitor<Config> config)
         {
             _discord = services.GetRequiredService<DiscordSocketClient>();
-            _googleService = services.GetRequiredService<GoogleService>();
-            _logger = services.GetRequiredService<LoggerService>();
+            _googleService = services.GetRequiredService<IGoogleService>();
+            _logger = services.GetRequiredService<ILoggerService>();
             _services = services;
             _config = config;
         }
@@ -51,13 +52,12 @@ namespace Nerdomat.Modules
         public async Task UserFlask()
         {
             var userDiscordTag = $"{Context.User.Username}#{Context.User.Discriminator}";    // create full DiscordTag
-            var google = _googleService.SheetsService.Value;    // create service or get existing one
             var googleSettings = _config.CurrentValue.GoogleSettings;        // gets curent value of GoogleSettings
             
-            var reportDate = await google.ReadCellAsync(googleSettings.SpreadsheetId, googleSettings.FlaskData.ReportDateAddres);
+            var reportDate = await _googleService.ReadCellAsync(googleSettings.FlaskData.ReportDateAddres);
             if (DateTime.TryParseExact(reportDate, @"MM/dd/yy (hh:mm tt)", new CultureInfo("en-US"), DateTimeStyles.None, out var reportDateResoult))
             {
-                var flaskData = await google.ReadDataAsync<FlaskModel>(googleSettings.SpreadsheetId, googleSettings.FlaskData.ReportValuesAddres);
+                var flaskData = await _googleService.ReadDataAsync<FlaskModel>(googleSettings.FlaskData.ReportValuesAddres);
                 var userData = flaskData.FirstOrDefault(x => string.Equals(x.DiscordTag, userDiscordTag, StringComparison.OrdinalIgnoreCase));
                 if (userData != null)
                 {

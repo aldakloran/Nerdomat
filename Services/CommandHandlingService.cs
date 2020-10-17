@@ -6,6 +6,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using System.Linq;
+using Nerdomat.Interfaces;
 using Nerdomat.Tools;
 
 namespace Nerdomat.Services
@@ -13,15 +14,15 @@ namespace Nerdomat.Services
     public class CommandHandlingService
     {
         private readonly CommandService _commands;
-        private readonly LoggerService _logger;
         private readonly DiscordSocketClient _discord;
         private readonly IServiceProvider _services;
+        private readonly ILoggerService _logger;
 
         public CommandHandlingService(IServiceProvider services)
         {
             _commands = services.GetRequiredService<CommandService>();
             _discord = services.GetRequiredService<DiscordSocketClient>();
-            _logger = services.GetRequiredService<LoggerService>();
+            _logger = services.GetRequiredService<ILoggerService>();
             _services = services;
 
             // Hook CommandExecuted to handle post-command-execution logic.

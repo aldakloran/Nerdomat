@@ -65,6 +65,8 @@ namespace Nerdomat.Tools
             return $"{text}{empty}";
         }
 
+        public static string AlginToRef(string s1, string s2, string strRef) => s1 + strRef.Remove(0, s1.Length + s2.Length) + s2;
+
         public static IEnumerable<string> DiscordMessageSplit(this string message)
         {
             const int maxMessageLength = 2000;

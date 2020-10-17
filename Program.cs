@@ -60,12 +60,14 @@ namespace Nerdomat
                 .AddSingleton<HttpClient>()
                 .AddSingleton<IGoogleService, GoogleService>()
                 .AddSingleton<ILoggerService, LoggerService>()
+                .AddSingleton<IDiscordContextService, DiscordContextService>()
                 .Configure<Config>(opt =>
                 {
-                    opt.MyGuildId = 253857543170818049;
-                    opt.TestChannelId = 272326889169747973;
-                    opt.DefaultUserRole = 273155982652211200;
-                    opt.LogChannelId = 649975460431921188;
+                    opt.MyGuildId = 253857543170818049ul;
+                    opt.TestChannelId = 272326889169747973ul;
+                    opt.FlaskChannelId = Debugger.IsAttached ? 272326889169747973ul : 566694643211960342ul;    //TestChannelId in debug mode
+                    opt.DefaultUserRole = 273155982652211200ul;
+                    opt.LogChannelId = 649975460431921188ul;
                     opt.GoogleSettings = new GoogleSettings
                     {
                         ApplicationName = "Google Sheets API .NET Quickstart",
@@ -73,6 +75,7 @@ namespace Nerdomat
                         ServiceAccountEmail = "nerdbot@quickstart-1555516131984.iam.gserviceaccount.com",
                         Jsonfile = "quickstart-1555516131984-9827913e7caa.json",
                         Scopes = new[] { SheetsService.Scope.Spreadsheets },
+                        ReportChartUrl = @"https://docs.google.com/spreadsheets/d/e/2PACX-1vSPNRbKY3mVr-scEmL9APyM4h1UH1moPNZVwKdQgjl3Vj_ZwLo3tu8ilIE8VgAIF6iOJtQemKPRDkbX/pubchart?oid=1599046376&format=image",
                         FlaskData = new FlaskData
                         {
                             ReportDateAddres = "Alchemia!J2",

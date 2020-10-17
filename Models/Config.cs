@@ -4,6 +4,7 @@ namespace Nerdomat.Models
     {
         public ulong MyGuildId { get; set; }
         public ulong TestChannelId { get; set; }
+        public ulong FlaskChannelId { get; set; }
         public ulong DefaultUserRole { get; set; }
         public ulong LogChannelId { get; set; }
         public string SettingsDirectory { get; set; }
@@ -18,6 +19,7 @@ namespace Nerdomat.Models
         public string Jsonfile { get; set; }
         public string[] Scopes { get; set; }
         public FlaskData FlaskData { get; set; }
+        public string ReportChartUrl { get; set; }
     }
 
     public class FlaskData

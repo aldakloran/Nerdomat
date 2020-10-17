@@ -34,6 +34,16 @@ namespace Nerdomat.Tools
                 return returnList;
             });
         }
+        
+        public static Task<string> ReadCellAsync(this SheetsService service, string spreadsheet, string rangeData)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                var data = ReadDataAsync(service, spreadsheet, rangeData).Result;
+                var cellContent = data?.FirstOrDefault()?.FirstOrDefault();
+                return cellContent ?? string.Empty;
+            });
+        }
 
         public static Task<List<T>> ReadDataAsync<T>(this SheetsService service, string spreadsheet, string rangeData) where T : class {
             return Task.Factory.StartNew(() => {

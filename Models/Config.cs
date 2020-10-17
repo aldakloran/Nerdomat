@@ -17,6 +17,13 @@ namespace Nerdomat.Models
         public string ServiceAccountEmail { get; set; }
         public string Jsonfile { get; set; }
         public string[] Scopes { get; set; }
+        public FlaskData FlaskData { get; set; }
     }
 
+    public class FlaskData
+    {
+        public string ReportDateAddres { get; set; }
+        public string ReportValuesAddres { get; set; }
+    }
+    
 }

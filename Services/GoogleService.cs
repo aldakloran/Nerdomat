@@ -14,10 +14,14 @@ namespace Nerdomat.Services
         private readonly IOptionsMonitor<Config> _config;
         private readonly IServiceProvider _services;
         
+        public Lazy<SheetsService> SheetsService { get; private set; }
+        
         public GoogleService(IServiceProvider services, IOptionsMonitor<Config> config)
         {
             _services = services;
             _config = config;
+
+            SheetsService = new Lazy<SheetsService>(CreateGoogleSheetsServiceAsync);
         }
 
         private SheetsService CreateGoogleSheetsServiceAsync()

@@ -71,7 +71,12 @@ namespace Nerdomat
                         SpreadsheetId = "1OBHG73kqjPjchancWMItV6d8tFSFIdLaY4Z7ShPEnWU",
                         ServiceAccountEmail = "nerdbot@quickstart-1555516131984.iam.gserviceaccount.com",
                         Jsonfile = "quickstart-1555516131984-9827913e7caa.json",
-                        Scopes = new[] { SheetsService.Scope.Spreadsheets }
+                        Scopes = new[] { SheetsService.Scope.Spreadsheets },
+                        FlaskData = new FlaskData
+                        {
+                            ReportDateAddres = "Alchemia!J2",
+                            ReportValuesAddres = "Alchemia!E2:G"
+                        }
                     };
                 })
                 .BuildServiceProvider();

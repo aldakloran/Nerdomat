@@ -39,29 +39,5 @@ namespace Nerdomat.Modules
                 await Context.Channel.SendMessageAsync($"{player.Name} {player.Server} {player.Type}");
             }
         }
-        
-        [Command("json")]
-        [Summary("Zapisuje ustawienia do jsona")]
-        public async Task SaveConfigToJson()
-        {
-            var js = new JsonSerializer
-            {
-                Formatting = Formatting.Indented,
-                NullValueHandling = NullValueHandling.Include
-            };
-            
-            //Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
-            var file = Path.Combine( Directory.GetCurrentDirectory(), @"Config.json");
-            if(File.Exists(file))
-                File.Delete(file);
-
-            await using (var sw = new StreamWriter(file))
-            using (var writer = new JsonTextWriter(sw))
-            {
-                js.Serialize(writer, _config.CurrentValue);
-            }
-
-            await Context.Channel.SendMessageAsync($"Saved current config to:\n{file}".Decorate(Decorator.Block_code));
-        }
     }
 }

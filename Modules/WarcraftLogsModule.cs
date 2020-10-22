@@ -44,12 +44,13 @@ namespace Nerdomat.Modules
                 charanters.AddRange(players);
             }
 
-            var distinctCharacters = charanters.Select(x => new {x.Name, x.Type})
-                                                                      .OrderBy(x => x.Name)
-                                                                      .ThenBy(x => x.Type)
-                                                                      .Select(x => $"{x.Name} {x.Type}")
-                                                                      .Distinct()
-                                                                      .ToList();
+            var distinctCharacters = charanters.Where(x => !_config.CurrentValue.WarcraftLogs.IgnoreTypes.Contains(x.Type))
+                .Select(x => new {x.Name, x.Type})
+                .OrderBy(x => x.Name)
+                .ThenBy(x => x.Type)
+                .Select(x => $"{x.Name} {x.Type}")
+                .Distinct()
+                .ToList();
 
             var sb = new StringBuilder();
             sb.AppendLine($"Postacie na {(ids.Length == 1 ? "raidzie" : "raidach")}:".Decorate(Decorator.Underline_bold));

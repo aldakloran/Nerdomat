@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading;
@@ -61,6 +62,7 @@ namespace Nerdomat
                 .AddSingleton<IGoogleService, GoogleService>()
                 .AddSingleton<ILoggerService, LoggerService>()
                 .AddSingleton<IDiscordContextService, DiscordContextService>()
+                .AddSingleton<IWarcraftLogsService, WarcraftLogsService>()
                 .Configure<Config>(opt =>
                 {
                     opt.MyGuildId = 253857543170818049ul;
@@ -81,6 +83,13 @@ namespace Nerdomat
                             ReportDateAddres = "Alchemia!J2",
                             ReportValuesAddres = "Alchemia!E2:G"
                         }
+                    };
+                    opt.WarcraftLogs = new WarcraftLogs
+                    {
+                        Url = @"https://www.warcraftlogs.com:443/v1/",
+                        PrivateKey = @"204d4b00bf29135a94b20fdc9b607555",
+                        PublicKey = @"63e64ea36d09230c2be8bb9bb0374ff4",
+                        IgnoreTypes = new List<string> { "NPC", "Pet" }
                     };
                 })
                 .BuildServiceProvider();

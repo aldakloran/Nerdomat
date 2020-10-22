@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.Rest;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Nerdomat.Models;
 using Nerdomat.Tools;
+using Newtonsoft.Json;
 
 namespace Nerdomat.Modules
 {
@@ -26,7 +28,9 @@ namespace Nerdomat.Modules
         }
 
         [MethodAdmin]
-        [Command("cleanreactsf"), Alias("cleanf"), Summary("Czyści reacty")]
+        [Command("cleanreactsf")]
+        [Alias("cleanf")]
+        [Summary("Czyści reacty")]
         public async Task CleanUsersReacts(ulong channel, params ulong[] masIds)
         {
             var chan = (SocketTextChannel)Context.Client.GetChannel(channel);
@@ -43,7 +47,32 @@ namespace Nerdomat.Modules
                 await message.RemoveAllReactionsAsync();
                 await Context.Channel.SendMessageAsync($"{o} Gotowe!");
             }
+        }
+        
+        [MethodAdmin]
+        [Command("json")]
+        [Summary("Zapisuje ustawienia bota do jsona")]
+        public async Task SaveConfigToJson()
+        {
+            var js = new JsonSerializer
+            {
+                Formatting = Formatting.Indented,
+                NullValueHandling = NullValueHandling.Include
+            };
+            
+            //Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
+            var file = Path.Combine( Directory.GetCurrentDirectory(), @"Config.json");
+            if(File.Exists(file))
+                File.Delete(file);
 
+            await using (var sw = new StreamWriter(file))
+            using (var writer = new JsonTextWriter(sw))
+            {
+                js.Serialize(writer, _config.CurrentValue);
+            }
+
+            await Context.Channel.SendFileAsync(file, "Aktualna konfiguracja:".Decorate(Decorator.Block_code));
+            File.Delete(file);
         }
     }
 }

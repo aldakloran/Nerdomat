@@ -13,6 +13,8 @@ using Nerdomat.Tools;
 
 namespace Nerdomat.Modules
 {
+    [ModuleActive(true)]
+    [ModuleName("Warcraft Logs")]
     public class WarcraftLogsModule : ModuleBase<SocketCommandContext>
     {
         private readonly IOptionsMonitor<Config> _config;
@@ -58,6 +60,22 @@ namespace Nerdomat.Modules
 
             foreach (var msg in sb.ToString().DiscordMessageSplit())
                 await Context.Channel.SendMessageAsync(msg);
+        }
+
+        [MethodAdmin]
+        [Command("podlicz")]
+        [Summary("Podliczenie raidu (na podstawie klucza)")]
+        public async Task CountFlasks(string raidKey, int count)
+        {
+            
+        }
+
+        [MethodAdmin]
+        [Command("podlicz")]
+        [Summary("Podliczenie raidu (na podstawie reactów)")]
+        public async Task CountFlasks(int count)
+        {
+            
         }
     }
 }

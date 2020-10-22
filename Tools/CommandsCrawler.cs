@@ -113,7 +113,7 @@ namespace Nerdomat.Tools
         public override string ToString()
         {
             return AdminOnly
-                ? $"{FullName.AlginText(AlignLength).Decorate(Decorator.Inline_code, true)} - {Description} {"(tylko dla aministratorów)".Decorate(Decorator.Bold)}"
+                ? $"{FullName.AlginText(AlignLength).Decorate(Decorator.Inline_code, true)} - {Description} {"(admin)".Decorate(Decorator.Bold)}"
                 : $"{FullName.AlginText(AlignLength).Decorate(Decorator.Inline_code, true)} - {Description}";
         }
     }

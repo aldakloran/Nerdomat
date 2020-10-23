@@ -10,6 +10,17 @@ namespace Nerdomat.Tools
 {
     public static class GoogleSheetsExtensions
     {
+        public static string GetExcelColumnName(this int intCol) {
+            string[] alphabet = { string.Empty, "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+            var a = from c1 in alphabet
+                from c2 in alphabet
+                from c3 in alphabet.Skip(1)                    // c3 is never empty
+                where c1 == string.Empty || c2 != string.Empty // only allow c2 to be empty if c1 is also empty
+                select c1 + c2 + c3;
+
+            return a.Skip(intCol - 1).Take(1).FirstOrDefault();
+        }
+        
         public static Task<UpdateValuesResponse> WriteDataAsync(this SheetsService service, string spreadsheet, string rangeData, ValueRange valueRange) {
             return Task.Factory.StartNew(() => {
                 var update = service.Spreadsheets.Values.Update(valueRange, spreadsheet, rangeData);

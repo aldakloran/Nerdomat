@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -46,6 +50,36 @@ namespace Nerdomat.Services
                 .FirstOrDefault(x => string.Equals(x.tag, discordTag, StringComparison.OrdinalIgnoreCase));
 
             return user?.user;
+        }
+
+        public SocketTextChannel GetChannel(ulong channelId)
+        {
+            var channel = _discord.GetGuild(_config.CurrentValue.MyGuildId).Channels
+                .FirstOrDefault(x => x.Id == channelId);
+
+            return channel as SocketTextChannel;
+        }
+
+        public async Task<RestUserMessage> GetChannelMessage(ulong channelId, ulong messageId)
+        {
+            var channel = GetChannel(channelId);
+            return await channel.GetMessageAsync(messageId) as RestUserMessage;
+        }
+
+        public async Task<List<RestUserMessage>> GetChannelMessages(ulong channelId)
+        {
+            var channel = GetChannel(channelId);
+            var msgs = await channel.GetMessagesAsync().Flatten().Select(x => x as RestUserMessage).ToListAsync();
+
+            return msgs;
+        }
+
+        public string GetUserNickname(ulong userId)
+        {
+            var user = _discord.GetGuild(_config.CurrentValue.MyGuildId).GetUser(userId);
+            return string.IsNullOrEmpty(user.Nickname)
+                ? user.Username
+                : user.Nickname;
         }
     }
 }

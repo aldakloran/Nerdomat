@@ -80,8 +80,24 @@ namespace Nerdomat
                         ReportChartUrl = @"https://docs.google.com/spreadsheets/d/e/2PACX-1vSPNRbKY3mVr-scEmL9APyM4h1UH1moPNZVwKdQgjl3Vj_ZwLo3tu8ilIE8VgAIF6iOJtQemKPRDkbX/pubchart?oid=1599046376&format=image",
                         FlaskData = new FlaskData
                         {
+                            ReportDateFormat = @"MM/dd/yy (hh:mm tt)",
                             ReportDateAddres = "Alchemia!J2",
-                            ReportValuesAddres = "Alchemia!E2:G"
+                            ReportValuesAddres = "Alchemia!E2:G",
+                            ReportSubstarctDateAddres = "Alchemia!R2",
+                            ReportFlaskCountAddresTemplate = "Alchemia!G2:G{0}"
+                        },
+                        NerdsData = new NerdsData
+                        {
+                            ConfigAltRowsAddres = "Alchemia!AE1:AE1",
+                            ConfigAltColumnsAddres = "Alchemia!AE2:AE2",
+                            MainData = "Alchemia!E2:F",
+                            AltsDataOffset = 35,
+                            AltsDataTemplate = "Alchemia!AI1:{0}{1}",
+                        },
+                        NewMembers = new NewMembers
+                        {
+                            ConfigLastRow = "Alchemia!AE3:AE3",
+                            NewMembersAddresTemplate = "Alchemia!L{0}:O{1}"
                         }
                     };
                     opt.WarcraftLogs = new WarcraftLogs
@@ -89,7 +105,10 @@ namespace Nerdomat
                         Url = @"https://www.warcraftlogs.com:443/v1/",
                         PrivateKey = @"204d4b00bf29135a94b20fdc9b607555",
                         PublicKey = @"63e64ea36d09230c2be8bb9bb0374ff4",
-                        IgnoreTypes = new List<string> { "NPC", "Pet" }
+                        IgnoreTypes = new List<string> { "NPC", "Pet" },
+                        FightKeyRegex = @"^.*reports/(.*)/$",
+                        PaidEmaoteCode = "\uD83C\uDDF5",    // https://www.fileformat.info/info/unicode/char/1f1f5/index.htm
+                        DoneEmoteCode = "\u2611"            // https://www.fileformat.info/info/unicode/char/1f1f5/index.htm
                     };
                 })
                 .BuildServiceProvider();

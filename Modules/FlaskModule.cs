@@ -38,20 +38,6 @@ namespace Nerdomat.Modules
             _config = config;
         }
 
-        private string FlaskGrammaVariety(int count)
-        {
-            var number = Math.Abs(count);
-            var lastNumber = number % 10;
-            
-            if (number == 1)
-                return "flaszke";
-
-            if((number > 20 || number < 10) && (lastNumber == 2 || lastNumber == 3 || lastNumber == 4))
-                return "flaszki";
-
-            return "flaszek";
-        }
-
         [Command("flaszka")]
         [Summary("wyśietla ilość flaszek nerda")]
         public async Task UserFlask()
@@ -60,7 +46,7 @@ namespace Nerdomat.Modules
             var googleSettings = _config.CurrentValue.GoogleSettings;        // gets curent value of GoogleSettings
             
             var reportDate = await _googleService.ReadCellAsync(googleSettings.FlaskData.ReportDateAddres);
-            if (DateTime.TryParseExact(reportDate, @"MM/dd/yy (hh:mm tt)", new CultureInfo("en-US"), DateTimeStyles.None, out var reportDateResoult))
+            if (DateTime.TryParseExact(reportDate, googleSettings.FlaskData.ReportDateFormat, new CultureInfo("en-US"), DateTimeStyles.None, out var reportDateResoult))
             {
                 var flaskData = await _googleService.ReadDataAsync<FlaskModel>(googleSettings.FlaskData.ReportValuesAddres);
                 var userData = flaskData.FirstOrDefault(x => string.Equals(x.DiscordTag, userDiscordTag, StringComparison.OrdinalIgnoreCase));
@@ -71,7 +57,7 @@ namespace Nerdomat.Modules
                     sb.Append(Context.User.Mention);
                     sb.Append($" <{userData.WowNick}> masz ");
                     sb.Append(userData.FlaskCount.ToString().Decorate(Decorator.Underline));
-                    sb.Append($" {FlaskGrammaVariety(userData.FlaskCount)}");
+                    sb.Append($" {userData.FlaskCount.FlaskGrammaVariety()}");
 
                     if (userData.FlaskCount < 0)
                     {
@@ -104,7 +90,7 @@ namespace Nerdomat.Modules
             var channel = (SocketTextChannel)_discord.GetGuild(_config.CurrentValue.MyGuildId).GetChannel(_config.CurrentValue.FlaskChannelId);
             
             var reportDate = await _googleService.ReadCellAsync(googleSettings.FlaskData.ReportDateAddres);
-            if (DateTime.TryParseExact(reportDate, @"MM/dd/yy (hh:mm tt)", new CultureInfo("en-US"), DateTimeStyles.None, out var reportDateResoult))
+            if (DateTime.TryParseExact(reportDate, googleSettings.FlaskData.ReportDateFormat, new CultureInfo("en-US"), DateTimeStyles.None, out var reportDateResoult))
             {
                 var flaskData = await _googleService.ReadDataAsync<FlaskModel>(googleSettings.FlaskData.ReportValuesAddres);
                 

@@ -93,5 +93,15 @@ namespace Nerdomat.Tools
                 yield return message;
             }
         }
+        
+        public static string DigitsOnly(this string value) {
+            if (!string.IsNullOrEmpty(value)) {
+                var arr = value.ToCharArray();
+
+                return arr.Where(item => char.IsNumber(item) || item == '.' || item == ',' || item == '-').Aggregate<char, string>(null, (current, item) => current + item);
+            }
+
+            return value;
+        }
     }
 }

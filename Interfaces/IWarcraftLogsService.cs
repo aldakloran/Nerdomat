@@ -6,6 +6,9 @@ namespace Nerdomat.Interfaces
 {
     public interface IWarcraftLogsService
     {
-        Task<List<Friendly>> GetCharacters(string fightId);
+        Task<WarcraftLogsFightsModel> GetFullFight(string fightId);
+        Task<List<WarcraftLogsFightsModel>> GetFullFight(IEnumerable<string> fightId);
+        Task<List<Friendly>> GetDistinctFriendly(string fightId);
+        Task<List<Friendly>> GetDistinctFriendly(IEnumerable<string> fightId);
     }
 }

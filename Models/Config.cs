@@ -22,13 +22,33 @@ namespace Nerdomat.Models
         public string Jsonfile { get; set; }
         public string[] Scopes { get; set; }
         public FlaskData FlaskData { get; set; }
+        public NerdsData NerdsData { get; set; }
+        public NewMembers NewMembers { get; set; }
         public string ReportChartUrl { get; set; }
     }
 
     public class FlaskData
     {
+        public string ReportDateFormat { get; set; }
         public string ReportDateAddres { get; set; }
         public string ReportValuesAddres { get; set; }
+        public string ReportSubstarctDateAddres { get; set; }
+        public string ReportFlaskCountAddresTemplate { get; set; }
+    }
+
+    public class NerdsData
+    {
+        public string ConfigAltRowsAddres { get; set; } 
+        public string ConfigAltColumnsAddres { get; set; }
+        public string MainData { get; set; }
+        public int AltsDataOffset { get; set; }
+        public string AltsDataTemplate { get; set; }
+    }
+
+    public class NewMembers
+    {
+        public string ConfigLastRow { get; set; } 
+        public string NewMembersAddresTemplate { get; set; } 
     }
 
     public class WarcraftLogs
@@ -37,5 +57,8 @@ namespace Nerdomat.Models
         public string PrivateKey { get; set; }
         public string PublicKey { get; set; }
         public List<string> IgnoreTypes { get; set; }
+        public string FightKeyRegex { get; set; }
+        public string PaidEmaoteCode { get; set; }
+        public string DoneEmoteCode { get; set; }
     }
 }

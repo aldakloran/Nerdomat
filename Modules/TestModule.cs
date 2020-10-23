@@ -33,8 +33,8 @@ namespace Nerdomat.Modules
         [Summary("Kontener na randomowe testy")]
         public async Task Test()
         {
-            var players = await _warcraftLogsService.GetCharacters("1J3rRY6L7Ng4zAyv");
-            foreach (var player in players)
+            var players = await _warcraftLogsService.GetFullFight("1J3rRY6L7Ng4zAyv");
+            foreach (var player in players.Friendlies)
             {
                 await Context.Channel.SendMessageAsync($"{player.Name} {player.Server} {player.Type}");
             }

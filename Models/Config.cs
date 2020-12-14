@@ -5,6 +5,8 @@ namespace Nerdomat.Models
     public class Config
     {
         public ulong MyGuildId { get; set; }
+        public ulong AdminChannelId { get; set; }
+        public ulong GeneralChannelId { get; set; }
         public ulong TestChannelId { get; set; }
         public ulong FlaskChannelId { get; set; }
         public ulong DefaultUserRole { get; set; }
@@ -12,6 +14,15 @@ namespace Nerdomat.Models
         public string SettingsDirectory { get; set; }
         public GoogleSettings GoogleSettings { get; set; }
         public WarcraftLogs WarcraftLogs { get; set; }
+        public GuildData GuildData { get; set; }
+    }
+
+    public class GuildData
+    {
+        public string GuildName { get; set; }
+        public string GuildUrl { get; set; }
+        public ulong GuildRaidLeadreId { get; set; }
+        public string GuildRaidLeaderName { get; set; }
     }
 
     public class GoogleSettings

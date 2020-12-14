@@ -43,13 +43,14 @@ namespace Nerdomat.Modules
         public async Task UserFlask()
         {
             var userDiscordTag = $"{Context.User.Username}#{Context.User.Discriminator}";    // create full DiscordTag
+            var userDiscordId = Context.User.Id;
             var googleSettings = _config.CurrentValue.GoogleSettings;        // gets curent value of GoogleSettings
             
             var reportDate = await _googleService.ReadCellAsync(googleSettings.FlaskData.ReportDateAddres);
             if (DateTime.TryParseExact(reportDate, googleSettings.FlaskData.ReportDateFormat, new CultureInfo("en-US"), DateTimeStyles.None, out var reportDateResoult))
             {
                 var flaskData = await _googleService.ReadDataAsync<FlaskModel>(googleSettings.FlaskData.ReportValuesAddres);
-                var userData = flaskData.FirstOrDefault(x => string.Equals(x.DiscordTag, userDiscordTag, StringComparison.OrdinalIgnoreCase));
+                var userData = flaskData.FirstOrDefault(x => x.DiscordId == userDiscordId);
                 if (userData != null)
                 {
                     var sb = new StringBuilder();
@@ -71,7 +72,7 @@ namespace Nerdomat.Modules
                 else
                 {
                     await Context.Channel.SendMessageAsync("Brak w bazie... sorry\nJeżeli jest to błąd skontaktuj się z administratorem");
-                    await _logger.WriteLog($"Can't find data in GooglSheets for user {userDiscordTag}");
+                    await _logger.WriteLog($"Can't find data in GooglSheets for user {userDiscordTag}({userDiscordId})");
                 }
             }
             else
@@ -105,7 +106,7 @@ namespace Nerdomat.Modules
                     sb.AppendLine("Poniższe osoby proszone są o uzupełnienie flaszek:");
                     sb.AppendLine(string.Empty);
                     foreach (var item in flaskData.Where(x => x.FlaskCount < 0).OrderBy(x => x.FlaskCount))
-                        sb.AppendLine($"{StringExtensions.AlginToRef(item.WowNick, item.FlaskCount.ToString(), strRef).Decorate(Decorator.Inline_code)}\t{_discordContext.MentionTag(item.DiscordTag)}");
+                        sb.AppendLine($"{StringExtensions.AlginToRef(item.WowNick, item.FlaskCount.ToString(), strRef).Decorate(Decorator.Inline_code)}\t{_discordContext.MentionId(item.DiscordId)}");
                 }
 
                 var chartResponse = await _httpClient.GetAsync(googleSettings.ReportChartUrl);

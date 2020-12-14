@@ -16,7 +16,7 @@ namespace Nerdomat.Services
     public class WarcraftLogsService : IWarcraftLogsService
     {
         private readonly IOptionsMonitor<Config> _config;
-        private readonly HttpClient _httpClient; 
+        private readonly HttpClient _httpClient;
         private readonly IServiceProvider _services;
         private readonly ILoggerService _logger;
 
@@ -28,8 +28,10 @@ namespace Nerdomat.Services
             _logger = services.GetRequiredService<ILoggerService>();
             _services = services;
             _config = config;
+
+            _logger.WriteLog($"{GetType().Name} initialized");
         }
-        
+
         public async Task<WarcraftLogsFightsModel> GetFullFight(string fightId)
         {
             var queryParams = new Dictionary<string, string>
@@ -38,7 +40,7 @@ namespace Nerdomat.Services
                 { "api_key", _config.CurrentValue.WarcraftLogs.PublicKey }
             };
             var query = QueryHelpers.AddQueryString(string.Concat(WarcraftLogsApi, @"report/fights/", fightId), queryParams);
-            
+
             using (var request = new HttpRequestMessage(HttpMethod.Get, query))
             {
                 var raidData = await _httpClient.SendAsync(request);
@@ -46,7 +48,7 @@ namespace Nerdomat.Services
                 {
                     var jsonData = await raidData.Content.ReadAsStringAsync();
                     var fights = JsonConvert.DeserializeObject<WarcraftLogsFightsModel>(jsonData);
-                    
+
                     return fights;
                 }
                 else
@@ -56,7 +58,7 @@ namespace Nerdomat.Services
                 }
             }
         }
-        
+
         public async Task<List<WarcraftLogsFightsModel>> GetFullFight(IEnumerable<string> fightId)
         {
             var data = new List<WarcraftLogsFightsModel>();
@@ -89,7 +91,7 @@ namespace Nerdomat.Services
                 .ThenBy(x => x.Type)
                 .Distinct()
                 .ToList();
-            
+
             return distinctCharacters;
         }
     }

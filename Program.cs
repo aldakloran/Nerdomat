@@ -13,6 +13,8 @@ using Nerdomat.Interfaces;
 using Nerdomat.Services;
 using Nerdomat.Models;
 using Nerdomat.Tools;
+using Nerdomat.Modules;
+using Microsoft.Extensions.Options;
 
 namespace Nerdomat
 {
@@ -56,28 +58,37 @@ namespace Nerdomat
         {
             return new ServiceCollection()
                 .AddSingleton<DiscordSocketClient>()
+                .AddSingleton<ILoggerService, LoggerService>()
                 .AddSingleton<CommandService>()
                 .AddSingleton<CommandHandlingService>()
                 .AddSingleton<HttpClient>()
                 .AddSingleton<IGoogleService, GoogleService>()
-                .AddSingleton<ILoggerService, LoggerService>()
                 .AddSingleton<IDiscordContextService, DiscordContextService>()
                 .AddSingleton<IWarcraftLogsService, WarcraftLogsService>()
                 .Configure<Config>(opt =>
                 {
                     opt.MyGuildId = 253857543170818049ul;
+                    opt.AdminChannelId = 294490276842700811ul;
+                    opt.GeneralChannelId = 253857543170818049ul;
                     opt.TestChannelId = 272326889169747973ul;
                     opt.FlaskChannelId = Debugger.IsAttached ? 272326889169747973ul : 566694643211960342ul;    //TestChannelId in debug mode
                     opt.DefaultUserRole = 273155982652211200ul;
                     opt.LogChannelId = 649975460431921188ul;
+                    opt.GuildData = new GuildData
+                    {
+                        GuildName = "N E R D",
+                        GuildUrl = "https://www.gildia-nerd.pl/",
+                        GuildRaidLeadreId = 217034282193911808ul,
+                        GuildRaidLeaderName = "Perco"
+                    };
                     opt.GoogleSettings = new GoogleSettings
                     {
                         ApplicationName = "Google Sheets API .NET Quickstart",
-                        SpreadsheetId = "1OBHG73kqjPjchancWMItV6d8tFSFIdLaY4Z7ShPEnWU",
+                        SpreadsheetId = "1eZnKZLNVRmtjkfGkVXwD4xpYA_BYrUyaggcGEPKBR2Y",
                         ServiceAccountEmail = "nerdbot@quickstart-1555516131984.iam.gserviceaccount.com",
                         Jsonfile = "quickstart-1555516131984-9827913e7caa.json",
-                        Scopes = new[] { SheetsService.Scope.Spreadsheets },
-                        ReportChartUrl = @"https://docs.google.com/spreadsheets/d/e/2PACX-1vSPNRbKY3mVr-scEmL9APyM4h1UH1moPNZVwKdQgjl3Vj_ZwLo3tu8ilIE8VgAIF6iOJtQemKPRDkbX/pubchart?oid=1599046376&format=image",
+                        Scopes = new[] { SheetsService.Scope.Spreadsheets }, 
+                        ReportChartUrl = @"https://docs.google.com/spreadsheets/d/e/2PACX-1vTmaZQFUK8-k6n16zVFMbvtznqQbDKJNSO9gQIEHnFaqFG_m_cvf9QtnFTUzXW0Tv4xibp057RkNosV/pubchart?oid=479166207&format=image",
                         FlaskData = new FlaskData
                         {
                             ReportDateFormat = @"MM/dd/yy (hh:mm tt)",

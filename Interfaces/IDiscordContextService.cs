@@ -8,6 +8,7 @@ namespace Nerdomat.Interfaces
     public interface IDiscordContextService
     {
         string MentionTag(string discordTag);
+        string MentionId(ulong discordId);
         ulong GetUserIdFromTag(string discordTag);
         SocketGuildUser GetUserFromTag(string discordTag);
         SocketTextChannel GetChannel(ulong channelId);

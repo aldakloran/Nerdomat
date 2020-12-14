@@ -25,6 +25,8 @@ namespace Nerdomat.Services
             _logger = services.GetRequiredService<ILoggerService>();
             _services = services;
 
+            _logger.WriteLog($"{GetType().Name} initialized");
+
             // Hook CommandExecuted to handle post-command-execution logic.
             _commands.CommandExecuted += CommandExecutedAsync;
             // Hook MessageReceived so we can process each message to see

@@ -14,7 +14,7 @@ namespace Nerdomat.Services
         private readonly IOptionsMonitor<Config> _config;
         private readonly DiscordSocketClient _discord;
         private readonly IServiceProvider _services;
-        
+
         public LoggerService(IServiceProvider services, IOptionsMonitor<Config> config)
         {
             _discord = services.GetRequiredService<DiscordSocketClient>();

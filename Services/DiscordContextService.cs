@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Nerdomat.Interfaces;
 using Nerdomat.Models;
+using Nerdomat.Modules;
 
 namespace Nerdomat.Services
 {
@@ -17,27 +18,39 @@ namespace Nerdomat.Services
         private readonly IOptionsMonitor<Config> _config;
         private readonly DiscordSocketClient _discord;
         private readonly IServiceProvider _services;
-        
+        private readonly ILoggerService _logger;
+
         public DiscordContextService(IServiceProvider services, IOptionsMonitor<Config> config)
         {
             _discord = services.GetRequiredService<DiscordSocketClient>();
+            _logger = services.GetRequiredService<ILoggerService>();
             _services = services;
             _config = config;
+
+            _logger.WriteLog($"{GetType().Name} initialized");
         }
 
         public string MentionTag(string discordTag)
         {
             var user = _discord.GetGuild(_config.CurrentValue.MyGuildId).Users
-                .Select(x => new {user = x, tag = $"{x.Username}#{x.Discriminator}"})
+                .Select(x => new { user = x, tag = $"{x.Username}#{x.Discriminator}" })
                 .FirstOrDefault(x => string.Equals(x.tag, discordTag, StringComparison.OrdinalIgnoreCase));
 
             return user?.user.Mention ?? string.Empty;
         }
 
+        public string MentionId(ulong discordId)
+        {
+            var user = _discord.GetGuild(_config.CurrentValue.MyGuildId).Users
+                .FirstOrDefault(x => x.Id == discordId);
+
+            return user.Mention ?? string.Empty;
+        }
+
         public ulong GetUserIdFromTag(string discordTag)
         {
             var user = _discord.GetGuild(_config.CurrentValue.MyGuildId).Users
-                .Select(x => new {user = x, tag = $"{x.Username}#{x.Discriminator}"})
+                .Select(x => new { user = x, tag = $"{x.Username}#{x.Discriminator}" })
                 .FirstOrDefault(x => string.Equals(x.tag, discordTag, StringComparison.OrdinalIgnoreCase));
 
             return user?.user.Id ?? 0ul;
@@ -46,7 +59,7 @@ namespace Nerdomat.Services
         public SocketGuildUser GetUserFromTag(string discordTag)
         {
             var user = _discord.GetGuild(_config.CurrentValue.MyGuildId).Users
-                .Select(x => new {user = x, tag = $"{x.Username}#{x.Discriminator}"})
+                .Select(x => new { user = x, tag = $"{x.Username}#{x.Discriminator}" })
                 .FirstOrDefault(x => string.Equals(x.tag, discordTag, StringComparison.OrdinalIgnoreCase));
 
             return user?.user;

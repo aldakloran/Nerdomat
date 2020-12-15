@@ -65,6 +65,7 @@ namespace Nerdomat
                 .AddSingleton<IGoogleService, GoogleService>()
                 .AddSingleton<IDiscordContextService, DiscordContextService>()
                 .AddSingleton<IWarcraftLogsService, WarcraftLogsService>()
+                .AddSingleton<IRaiderIoService, RaiderIoService>()
                 .Configure<Config>(opt =>
                 {
                     opt.MyGuildId = 253857543170818049ul;
@@ -87,7 +88,7 @@ namespace Nerdomat
                         SpreadsheetId = "1eZnKZLNVRmtjkfGkVXwD4xpYA_BYrUyaggcGEPKBR2Y",
                         ServiceAccountEmail = "nerdbot@quickstart-1555516131984.iam.gserviceaccount.com",
                         Jsonfile = "quickstart-1555516131984-9827913e7caa.json",
-                        Scopes = new[] { SheetsService.Scope.Spreadsheets }, 
+                        Scopes = new[] { SheetsService.Scope.Spreadsheets },
                         ReportChartUrl = @"https://docs.google.com/spreadsheets/d/e/2PACX-1vTmaZQFUK8-k6n16zVFMbvtznqQbDKJNSO9gQIEHnFaqFG_m_cvf9QtnFTUzXW0Tv4xibp057RkNosV/pubchart?oid=479166207&format=image",
                         FlaskData = new FlaskData
                         {

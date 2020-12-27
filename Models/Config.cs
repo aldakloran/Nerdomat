@@ -12,6 +12,7 @@ namespace Nerdomat.Models
         public ulong DefaultUserRole { get; set; }
         public ulong LogChannelId { get; set; }
         public string SettingsDirectory { get; set; }
+        public int WatchdogMaxFailLimit { get; set; }
         public GoogleSettings GoogleSettings { get; set; }
         public WarcraftLogs WarcraftLogs { get; set; }
         public GuildData GuildData { get; set; }
@@ -49,7 +50,7 @@ namespace Nerdomat.Models
 
     public class NerdsData
     {
-        public string ConfigAltRowsAddres { get; set; } 
+        public string ConfigAltRowsAddres { get; set; }
         public string ConfigAltColumnsAddres { get; set; }
         public string MainData { get; set; }
         public int AltsDataOffset { get; set; }
@@ -58,8 +59,8 @@ namespace Nerdomat.Models
 
     public class NewMembers
     {
-        public string ConfigLastRow { get; set; } 
-        public string NewMembersAddresTemplate { get; set; } 
+        public string ConfigLastRow { get; set; }
+        public string NewMembersAddresTemplate { get; set; }
     }
 
     public class WarcraftLogs

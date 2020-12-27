@@ -43,6 +43,7 @@ namespace Nerdomat
 
             // Here we initialize the logic required to register our commands.
             await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
+            await services.GetRequiredService<IWatchdogService>().InitializeAsync();
 
             await Task.Delay(Timeout.Infinite);
         }
@@ -66,6 +67,7 @@ namespace Nerdomat
                 .AddSingleton<IDiscordContextService, DiscordContextService>()
                 .AddSingleton<IWarcraftLogsService, WarcraftLogsService>()
                 .AddSingleton<IRaiderIoService, RaiderIoService>()
+                .AddSingleton<IWatchdogService, WatchdogService>()
                 .Configure<Config>(opt =>
                 {
                     opt.MyGuildId = 253857543170818049ul;
@@ -75,6 +77,7 @@ namespace Nerdomat
                     opt.FlaskChannelId = Debugger.IsAttached ? 272326889169747973ul : 566694643211960342ul;    //TestChannelId in debug mode
                     opt.DefaultUserRole = 273155982652211200ul;
                     opt.LogChannelId = 649975460431921188ul;
+                    opt.WatchdogMaxFailLimit = 5;
                     opt.GuildData = new GuildData
                     {
                         GuildName = "N E R D",

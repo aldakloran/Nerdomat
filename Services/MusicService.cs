@@ -57,7 +57,11 @@ namespace Nerdomat.Services
 
             if (results.LoadStatus == Victoria.Enums.LoadStatus.NoMatches || results.LoadStatus == Victoria.Enums.LoadStatus.LoadFailed)
             {
-                return "Nie znaleziono";
+                results = await _lavaSocketClient.SearchYouTubeAsync(query);
+                if (results.LoadStatus == Victoria.Enums.LoadStatus.NoMatches || results.LoadStatus == Victoria.Enums.LoadStatus.LoadFailed)
+                {
+                    return "Nie znaleziono";
+                }
             }
 
             var track = results.Tracks.FirstOrDefault();

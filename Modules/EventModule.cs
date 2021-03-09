@@ -46,7 +46,7 @@ namespace Nerdomat.Modules
             _discord.UserBanned += UserBaned;
             _discord.UserVoiceStateUpdated += UserVoiceUpdate;
 
-            _logger.WriteLog("EventHandlerModule initialized");
+            Console.WriteLine($"{GetType().Name} initialized");
         }
 
         public async Task UserJoinServer(SocketGuildUser arg)

@@ -15,6 +15,7 @@ using Nerdomat.Models;
 using Nerdomat.Tools;
 using Nerdomat.Modules;
 using Microsoft.Extensions.Options;
+using Victoria;
 
 namespace Nerdomat
 {
@@ -42,6 +43,7 @@ namespace Nerdomat
             await client.StartAsync();
 
             // Here we initialize the logic required to register our commands.
+            await services.GetRequiredService<IMusicService>().InitializeAsync();
             await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
             await services.GetRequiredService<IWatchdogService>().InitializeAsync();
 
@@ -63,6 +65,13 @@ namespace Nerdomat
                 .AddSingleton<CommandService>()
                 .AddSingleton<CommandHandlingService>()
                 .AddSingleton<HttpClient>()
+                // .AddSingleton<LavaNode>()
+                // .AddSingleton<LavaConfig>()
+                .AddLavaNode(x =>
+                {
+                    x.SelfDeaf = false;
+                })
+                .AddSingleton<IMusicService, MusicService>()
                 .AddSingleton<IGoogleService, GoogleService>()
                 .AddSingleton<IDiscordContextService, DiscordContextService>()
                 .AddSingleton<IWarcraftLogsService, WarcraftLogsService>()
@@ -124,6 +133,12 @@ namespace Nerdomat
                         FightKeyRegex = @"^.*reports/(.*)/$",
                         PaidEmaoteCode = "\uD83C\uDDF5",    // https://www.fileformat.info/info/unicode/char/1f1f5/index.htm
                         DoneEmoteCode = "\u2611"            // https://www.fileformat.info/info/unicode/char/1f1f5/index.htm
+                    };
+                    opt.RaidbotsAccountData = new Raidbots
+                    {
+                        LoginCellAddress = @"Raidbots!B2",
+                        PasswordCellAddress = @"Raidbots!B3",
+                        AllowerRoleId = 255245178846052363ul
                     };
                 })
                 .BuildServiceProvider();

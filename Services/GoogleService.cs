@@ -32,7 +32,7 @@ namespace Nerdomat.Services
 
             SheetsService = new Lazy<SheetsService>(CreateGoogleSheetsService);
 
-            _logger.WriteLog($"{GetType().Name} initialized");
+            Console.WriteLine($"{GetType().Name} initialized");
         }
 
         private SheetsService CreateGoogleSheetsService()
@@ -61,6 +61,7 @@ namespace Nerdomat.Services
 
             return service;
         }
+
 
         public Task<UpdateValuesResponse> WriteDataAsync(string rangeData, ValueRange valueRange) => SheetsService.Value.WriteDataAsync(_config.CurrentValue.GoogleSettings.SpreadsheetId, rangeData, valueRange);
 

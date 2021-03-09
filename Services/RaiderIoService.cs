@@ -29,7 +29,7 @@ namespace Nerdomat.Services
             _services = services;
             _config = config;
 
-            _logger.WriteLog($"{GetType().Name} initialized");
+            Console.WriteLine($"{GetType().Name} initialized");
         }
 
         public async Task<RioCharacterProfileModel> ProfileGet(string characterName)

@@ -60,5 +60,49 @@ namespace Nerdomat.Modules
 
             await Context.Channel.SendMessageAsync(string.Empty, false, newEmbed.Build());
         }
+
+        [Command("BlizzCon")]
+        [Summary("Podaje timery BlizzConu")]
+        public async Task Blizzcon()
+        {
+            var blizzconDate = new DateTime(2021, 02, 19);
+            var diff = blizzconDate.Subtract(DateTime.Now);
+
+            var container = new EmbedFieldBuilder { IsInline = true, Name = "BlizzCon timer:" };
+            if (blizzconDate.Date == DateTime.Now.Date)
+            {
+                // blizzcon in proggres
+                container.Value = $"BlizzCon już dziś!";
+            }
+            else if (blizzconDate.Date < DateTime.Now.Date)
+            {
+                // blizzcon passed
+                container.Value = $"BlizzCon już był!";
+            }
+            else
+            {
+                // blizzcon incomming
+                container.Value = $"Dni: {((int)diff.TotalDays).ToString().Decorate(Decorator.Bold)}\nGodzin: {((int)diff.TotalHours).ToString().Decorate(Decorator.Bold)}\nMinut: {((int)diff.TotalMinutes).ToString().Decorate(Decorator.Bold)}\n Sekund: {((int)diff.TotalSeconds).ToString().Decorate(Decorator.Bold)}";
+            }
+
+            var emb = new EmbedBuilder
+            {
+                Color = Color.Blue,
+                ThumbnailUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Blizzard_Entertainment_Logo.svg/1200px-Blizzard_Entertainment_Logo.svg.png",//CategoryUrl,//LogoUrl,
+                ImageUrl = @"https://bnetcmsus-a.akamaihd.net/cms/blog_header/18/18YEXZEX1K871600388208960.jpg",
+                Url = @"https://blizzcon.com/en-us/news/23513935/save-the-date-for-blizzconline-february-19-20",
+                Title = $"BlizzCon {blizzconDate.Year}"
+            };
+
+            var footer = new EmbedFooterBuilder
+            {
+                Text = $"[{DateTime.Now:yyyy-MM-dd  HH:mm:ss}]"
+            };
+
+            emb.Footer = footer;
+            emb.AddField(container);
+
+            await Context.Channel.SendMessageAsync(string.Empty, false, emb.Build());
+        }
     }
 }

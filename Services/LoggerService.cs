@@ -20,6 +20,8 @@ namespace Nerdomat.Services
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _services = services;
             _config = config;
+
+            Console.WriteLine($"{GetType().Name} initialized");
         }
 
         public async Task WriteLog(string message)

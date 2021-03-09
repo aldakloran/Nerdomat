@@ -7,6 +7,7 @@ namespace Nerdomat.Interfaces
 {
     public interface IDiscordContextService
     {
+        bool UserInRole(ulong discordId, ulong role);
         string MentionTag(string discordTag);
         string MentionId(ulong discordId);
         ulong GetUserIdFromTag(string discordTag);

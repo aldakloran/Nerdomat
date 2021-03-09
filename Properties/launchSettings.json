@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Nerdomat": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DISCORD-TOKEN": "NDg4Njg4NzY2NTM4NDgxNjY1.W5Zk4Q.R6E1ty9pIp7eK0WIJl28siLJHR8"
+      }
+    }
+  }
+}

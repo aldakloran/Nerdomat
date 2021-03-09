@@ -50,7 +50,7 @@ namespace Nerdomat.Services
 
         private async void WatchdogCheck(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine("Watchdog tick");
+            //Console.WriteLine("Watchdog tick");
             if (!_alloweedStates.Contains(_discord.ConnectionState))
                 _failCounter++;
             else

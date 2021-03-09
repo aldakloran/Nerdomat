@@ -16,7 +16,8 @@ namespace Nerdomat.Models
         public GoogleSettings GoogleSettings { get; set; }
         public WarcraftLogs WarcraftLogs { get; set; }
         public GuildData GuildData { get; set; }
-    }
+        public Raidbots RaidbotsAccountData { get; set; }
+    }//
 
     public class GuildData
     {
@@ -72,5 +73,12 @@ namespace Nerdomat.Models
         public string FightKeyRegex { get; set; }
         public string PaidEmaoteCode { get; set; }
         public string DoneEmoteCode { get; set; }
+    }
+
+    public class Raidbots
+    {
+        public string LoginCellAddress { get; set; }
+        public string PasswordCellAddress { get; set; }
+        public ulong AllowerRoleId { get; set; }
     }
 }

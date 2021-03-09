@@ -27,9 +27,16 @@ namespace Nerdomat.Services
             _services = services;
             _config = config;
 
-            _logger.WriteLog($"{GetType().Name} initialized");
+            Console.WriteLine($"{GetType().Name} initialized");
         }
 
+        public bool UserInRole(ulong discordId, ulong role)
+        {
+            var user = _discord.GetGuild(_config.CurrentValue.MyGuildId).Users
+                .FirstOrDefault(x => x.Id == discordId);
+
+            return user?.Roles.Any(x => x.Id == role) ?? false;
+        }
         public string MentionTag(string discordTag)
         {
             var user = _discord.GetGuild(_config.CurrentValue.MyGuildId).Users

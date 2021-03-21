@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Rest;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Options;
 using Nerdomat.Interfaces;
 using Nerdomat.Models;
 using Nerdomat.Modules;
+using Nerdomat.Tools;
 using Victoria;
 using Victoria.EventArgs;
 
@@ -39,7 +41,7 @@ namespace Nerdomat.Services
         public Task InitializeAsync()
         {
             _discord.Ready += ClientReadyAsync;
-            _lavaSocketClient.OnLog += LogAsync;
+            //_lavaSocketClient.OnLog += LogAsync;
             _lavaSocketClient.OnTrackEnded += TrackFinished;
             return Task.CompletedTask;
         }
@@ -50,32 +52,53 @@ namespace Nerdomat.Services
         public async Task LeaveAsync(SocketVoiceChannel voiceChannel)
             => await _lavaSocketClient.LeaveAsync(voiceChannel);
 
+        // public async Task<string> PlayAsync(string query, IGuild guildId)
+        // {
+        //     var _player = _lavaSocketClient.GetPlayer(guildId);
+        //     var results = await SearchSongAsync(query);
+
+        //     if (results.LoadStatus == Victoria.Enums.LoadStatus.NoMatches || results.LoadStatus == Victoria.Enums.LoadStatus.LoadFailed)
+        //         return "Nie znaleziono";
+
+        //     var track = results.Tracks.FirstOrDefault();
+
+        //     if (_player.PlayerState == Victoria.Enums.PlayerState.Playing)
+        //     {
+        //         _player.Queue.Enqueue(track);
+        //         return $"Dodano do kolejki: {track.Title.SongTitleTrim()} ({(track.Duration.Hours > 0 ? track.Duration.ToString(@"hh\:mm\:ss") : track.Duration.ToString(@"mm\:ss"))})";
+        //     }
+        //     else
+        //     {
+        //         await _player.PlayAsync(track);
+        //         return $"Teraz odtwarzane: {track.Title.SongTitleTrim()} ({(track.Duration.Hours > 0 ? track.Duration.ToString(@"hh\:mm\:ss") : track.Duration.ToString(@"mm\:ss"))})";
+        //     }
+        // }
+
         public async Task<string> PlayAsync(string query, IGuild guildId)
         {
             var _player = _lavaSocketClient.GetPlayer(guildId);
-            var results = await _lavaSocketClient.SearchAsync(query);
+            var results = await SearchSongAsync(query);
 
             if (results.LoadStatus == Victoria.Enums.LoadStatus.NoMatches || results.LoadStatus == Victoria.Enums.LoadStatus.LoadFailed)
+                return "Nie znaleziono";
+
+            var sb = new StringBuilder();
+
+            foreach (var track in SongsFromSearchGet(results))
             {
-                results = await _lavaSocketClient.SearchYouTubeAsync(query);
-                if (results.LoadStatus == Victoria.Enums.LoadStatus.NoMatches || results.LoadStatus == Victoria.Enums.LoadStatus.LoadFailed)
+                if (_player.PlayerState == Victoria.Enums.PlayerState.Playing)
                 {
-                    return "Nie znaleziono";
+                    _player.Queue.Enqueue(track);
+                    sb.AppendLine($"Dodano do kolejki: {track.Title.SongTitleTrim()} ({(track.Duration.Hours > 0 ? track.Duration.ToString(@"hh\:mm\:ss") : track.Duration.ToString(@"mm\:ss"))})");
+                }
+                else
+                {
+                    await _player.PlayAsync(track);
+                    sb.AppendLine($"Teraz odtwarzane: {track.Title.SongTitleTrim()} ({(track.Duration.Hours > 0 ? track.Duration.ToString(@"hh\:mm\:ss") : track.Duration.ToString(@"mm\:ss"))})");
                 }
             }
 
-            var track = results.Tracks.FirstOrDefault();
-
-            if (_player.PlayerState == Victoria.Enums.PlayerState.Playing)
-            {
-                _player.Queue.Enqueue(track);
-                return $"{track.Title} dodano do kolejki";
-            }
-            else
-            {
-                await _player.PlayAsync(track);
-                return $"Teraz odtwarzane: {track.Title}";
-            }
+            return sb.ToString();
         }
 
         public async Task<string> StopAsync(IGuild guildId)
@@ -95,7 +118,7 @@ namespace Nerdomat.Services
 
             var oldTrack = _player.Track;
             await _player.SkipAsync();
-            return $"Pominięto: {oldTrack.Title} \nTeraz odtwarzane: {_player.Track.Title}";
+            return $"Pominięto: {oldTrack.Title.SongTitleTrim()} \nTeraz odtwarzane: {_player.Track.Title.SongTitleTrim()}";
         }
 
         public async Task<string> SetVolumeAsync(ushort vol, IGuild guildId)
@@ -146,12 +169,100 @@ namespace Nerdomat.Services
             return "Odtwarzacz nie jest zapauzowany";
         }
 
+        public Task<string> QueueGetAsync(IGuild guildId)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                var _player = _lavaSocketClient.GetPlayer(guildId);
+                if (_player is null)
+                    return "Odtwarzacz nic nie odtwarza";
+
+                if (_player.Track is null)
+                    return "Odtwarzacz nic nie odtwarza";
+
+                var counter = 1;
+                var sb = new StringBuilder();
+                sb.AppendLine("Aktualna kolejka to:".Decorate(Decorator.Underline_bold));
+                sb.AppendLine($"\t{counter++}. {_player.Track.Title.SongTitleTrim()}".Decorate(Decorator.Bold_Italics));
+
+                foreach (var track in _player.Queue)
+                    sb.AppendLine($"\t{counter++}. {track.Title.SongTitleTrim()}".Decorate(Decorator.Italics));
+
+                return sb.ToString();
+            });
+        }
+
+        public Task<string> RemoveFromQueueAsync(IGuild guildId, int id)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                var _player = _lavaSocketClient.GetPlayer(guildId);
+                if (_player is null)
+                    return "Odtwarzacz nic nie odtwarza";
+
+                var track = _player.Queue.ElementAtOrDefault(id - 2);
+                if (track is null)
+                    return $"Nie znaleziono elementu z indexem {id}";
+
+                _player.Queue.Remove(track);
+                return $"Usunięto z kolejki: {track.Title.SongTitleTrim()}";
+            });
+        }
+
+        public async Task<string> RemoveFromQueueAsync(IGuild guildId, string name)
+        {
+            var _player = _lavaSocketClient.GetPlayer(guildId);
+            var results = await SearchSongAsync(name);
+
+            if (_player is null)
+                return "Odtwarzacz nic nie odtwarza";
+
+            if (results.LoadStatus == Victoria.Enums.LoadStatus.NoMatches || results.LoadStatus == Victoria.Enums.LoadStatus.LoadFailed)
+                return "Nie znaleziono";
+
+            var track = _player.Queue.FirstOrDefault(x => string.Equals(x.Title, results.Tracks.First().Title, StringComparison.CurrentCultureIgnoreCase));
+            if (track is null)
+                return $"Nie znaleziono {name} w kolejce";
+
+            _player.Queue.Remove(track);
+            return $"Usunięto z kolejki: {track.Title.SongTitleTrim()}";
+        }
 
         private async Task ClientReadyAsync()
         {
             if (!_lavaSocketClient.IsConnected)
             {
                 await _lavaSocketClient.ConnectAsync();
+            }
+        }
+
+        private async Task<Victoria.Responses.Rest.SearchResponse> SearchSongAsync(string query)
+        {
+            var results = await _lavaSocketClient.SearchAsync(query);
+
+            if (results.LoadStatus == Victoria.Enums.LoadStatus.NoMatches || results.LoadStatus == Victoria.Enums.LoadStatus.LoadFailed)
+            {
+                results = await _lavaSocketClient.SearchYouTubeAsync(query);
+            }
+
+            return results;
+        }
+
+        private IEnumerable<LavaTrack> SongsFromSearchGet(Victoria.Responses.Rest.SearchResponse searchResoult)
+        {
+            if (searchResoult.LoadStatus == Victoria.Enums.LoadStatus.NoMatches || searchResoult.LoadStatus == Victoria.Enums.LoadStatus.LoadFailed)
+                yield return null;
+
+            if (searchResoult.LoadStatus == Victoria.Enums.LoadStatus.PlaylistLoaded && !string.IsNullOrWhiteSpace(searchResoult.Playlist.Name))
+            {
+                foreach (var song in searchResoult.Tracks)
+                {
+                    yield return song;
+                }
+            }
+            else
+            {
+                yield return searchResoult.Tracks.FirstOrDefault();
             }
         }
 
@@ -177,6 +288,7 @@ namespace Nerdomat.Services
             }
 
             await args.Player.PlayAsync(track);
+            await player.TextChannel.SendMessageAsync($"Teraz odtwarzane: {track.Title.SongTitleTrim()}");
         }
 
         private async Task LogAsync(LogMessage logMessage)

@@ -63,11 +63,43 @@ namespace Nerdomat.Modules
             }
         }
 
+        // [Command("Play")]
+        // [Summary("Rozpocznij odtwarzanie")]
+        // public async Task Play([Remainder] string query)
+        //     => await ReplyAsync(await _music.PlayAsync(query, Context.Guild));
+
         [Command("Play")]
         [Summary("Rozpocznij odtwarzanie")]
         public async Task Play([Remainder] string query)
-            => await ReplyAsync(await _music.PlayAsync(query, Context.Guild));
+        {
+            var msg = await _music.PlayAsync(query, Context.Guild);
+            foreach (var msgSplit in msg.DiscordMessageSplit())
+            {
+                await ReplyAsync(msgSplit);
+            }
+        }
 
+
+        [Command("Queue")]
+        [Summary("Wyświetl aktualną kolejkę")]
+        public async Task Queue()
+        {
+            var msg = await _music.QueueGetAsync(Context.Guild);
+            foreach (var msgSplit in msg.DiscordMessageSplit())
+            {
+                await ReplyAsync(msgSplit);
+            }
+        }
+
+        [Command("Remove")]
+        [Summary("Usuwa element z kolejki")]
+        public async Task Remove(int id)
+                    => await ReplyAsync(await _music.RemoveFromQueueAsync(Context.Guild, id));
+
+        [Command("Remove")]
+        [Summary("Usuwa element z kolejki")]
+        public async Task Remove([Remainder] string songName)
+            => await ReplyAsync(await _music.RemoveFromQueueAsync(Context.Guild, songName));
 
         [Command("Stop")]
         [Summary("Zatrzymaj odtwarzanie")]

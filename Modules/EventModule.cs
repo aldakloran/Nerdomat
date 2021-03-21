@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Nerdomat.Interfaces;
 using Nerdomat.Models;
 using Nerdomat.Tools;
+using Victoria;
 
 namespace Nerdomat.Modules
 {
@@ -21,9 +22,13 @@ namespace Nerdomat.Modules
         private readonly IDiscordContextService _discordContext;
         private readonly IGoogleService _googleService;
         private readonly ILoggerService _logger;
+        private readonly LavaNode _lavaSocketClient;
+        private readonly IMusicService _music;
 
         public EventHandlerModule(IServiceProvider services, IOptionsMonitor<Config> config)
         {
+            _music = services.GetRequiredService<IMusicService>();
+            _lavaSocketClient = services.GetRequiredService<LavaNode>();
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _discordContext = services.GetRequiredService<IDiscordContextService>();
             _googleService = services.GetRequiredService<IGoogleService>();
@@ -173,10 +178,28 @@ namespace Nerdomat.Modules
                 sb.AppendLine($"{userName} has switched channel:");
                 sb.AppendLine($"\tfrom: #{before.VoiceChannel.Name}");
                 sb.AppendLine($"\tto: #{after.VoiceChannel.Name}");
-
             }
 
+            if (before.VoiceChannel != null)
+                await MusicPlayerAutoLeave(before.VoiceChannel);
+
             await _logger.WriteLog(sb.ToString());
+        }
+
+        private async Task MusicPlayerAutoLeave(SocketVoiceChannel channel)
+        {
+            var guild = _discord.GetGuild(_config.CurrentValue.MyGuildId);
+            if (_lavaSocketClient.TryGetPlayer(guild, out var player))
+            {
+                if (player.VoiceChannel.Id == channel.Id && !channel.Users.Any(x => !x.IsBot))
+                {
+                    var textChannel = player.TextChannel;
+
+                    await textChannel.SendMessageAsync($"[Auto] {await _music.StopAsync(guild)}");
+                    await _music.LeaveAsync(channel);
+                    await textChannel.SendMessageAsync($"[Auto] Rozłączono z kanałem {channel.Name}");
+                }
+            }
         }
     }
 }

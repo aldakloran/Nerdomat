@@ -29,6 +29,11 @@ namespace Nerdomat.Modules
             _config = config;
         }
 
+        [Command("ping")]
+        [Summary("Podaje latency do servera discorda")]
+        public async Task Ping()
+            => await ReplyAsync($"Latency: ({_discord?.Latency ?? 0}ms)".Decorate(Decorator.Block_code));
+
         [Command("test")]
         [Summary("Kontener na randomowe testy")]
         public async Task Test()

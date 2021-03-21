@@ -16,5 +16,8 @@ namespace Nerdomat.Interfaces
         Task<string> SetVolumeAsync(ushort vol, IGuild guildId);
         Task<string> PauseOrResumeAsync(IGuild guildId);
         Task<string> ResumeAsync(IGuild guildId);
+        Task<string> QueueGetAsync(IGuild guildId);
+        Task<string> RemoveFromQueueAsync(IGuild guildId, int id);
+        Task<string> RemoveFromQueueAsync(IGuild guildId, string name);
     }
 }

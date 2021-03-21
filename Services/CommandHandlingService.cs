@@ -52,7 +52,7 @@ namespace Nerdomat.Services
             // Perform prefix check. You may want to replace this with
             // (!message.HasCharPrefix('!', ref argPos))
             // for a more traditional command format like !help.
-            if (!message.HasCharPrefix('!', ref argPos)) return;
+            if (!message.HasCharPrefix(System.Diagnostics.Debugger.IsAttached ? '$' : '!', ref argPos)) return;
 
             var context = new SocketCommandContext(_discord, message);
 

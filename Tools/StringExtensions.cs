@@ -8,6 +8,12 @@ namespace Nerdomat.Tools
 {
     public static class StringExtensions
     {
+        public static string SongTitleTrim(this string songTitle)
+            => songTitle.Length > 55
+                    ? $"{songTitle.Substring(0, 55)} [...]"
+                    : songTitle;
+
+
         //trim beggining and end of string and return it as ref string
         public static string DiscordTrimmer(this string value, ref string beginTrim, ref string endTrim)
         {
@@ -93,9 +99,11 @@ namespace Nerdomat.Tools
                 yield return message;
             }
         }
-        
-        public static string DigitsOnly(this string value) {
-            if (!string.IsNullOrEmpty(value)) {
+
+        public static string DigitsOnly(this string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
                 var arr = value.ToCharArray();
 
                 return arr.Where(item => char.IsNumber(item) || item == '.' || item == ',' || item == '-').Aggregate<char, string>(null, (current, item) => current + item);

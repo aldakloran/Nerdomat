@@ -41,11 +41,13 @@ namespace Nerdomat.Modules
 
         private void InitializeEvents()
         {
+            _discord.Ready -= DiscordReady;
             _discord.UserJoined -= UserJoinServer;
             _discord.UserLeft -= UserLeftServer;
             _discord.UserBanned -= UserBaned;
             _discord.UserVoiceStateUpdated -= UserVoiceUpdate;
 
+            _discord.Ready += DiscordReady;
             _discord.UserJoined += UserJoinServer;
             _discord.UserLeft += UserLeftServer;
             _discord.UserBanned += UserBaned;
@@ -53,6 +55,16 @@ namespace Nerdomat.Modules
 
             Console.WriteLine($"{GetType().Name} initialized");
         }
+
+        private async Task DiscordReady()
+        {
+            var role = _discord.GetGuild(_config.CurrentValue.MyGuildId).GetRole(_config.CurrentValue.DefaultUserRole);
+            var users = _discord.GetGuild(_config.CurrentValue.MyGuildId).Users.Where(x => !x.Roles.Contains(role));
+
+            foreach (var usserToAssign in users)
+                await usserToAssign.AddRoleAsync(role);
+        }
+
 
         public async Task UserJoinServer(SocketGuildUser arg)
         {

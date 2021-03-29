@@ -1,6 +1,7 @@
 .env
 /obj
 /bin
+/logs
 .idea/.idea.Nerdomat.dir/riderModule.iml
 .idea/.idea.Nerdomat.dir/.idea/contentModel.xml
 .idea/.idea.Nerdomat.dir/.idea/indexLayout.xml

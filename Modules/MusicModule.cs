@@ -94,7 +94,7 @@ namespace Nerdomat.Modules
         [Command("Remove")]
         [Summary("Usuwa element z kolejki")]
         public async Task Remove(int id)
-                    => await ReplyAsync(await _music.RemoveFromQueueAsync(Context.Guild, id));
+            => await ReplyAsync(await _music.RemoveFromQueueAsync(Context.Guild, id));
 
         [Command("Remove")]
         [Summary("Usuwa element z kolejki")]
@@ -110,6 +110,19 @@ namespace Nerdomat.Modules
         [Summary("Pomiń")]
         public async Task Skip()
             => await ReplyAsync(await _music.SkipAsync(Context.Guild));
+
+        [Command("Shuffle")]
+        [Summary("Przemieszaj kolejkę")]
+        public async Task Shuffle()
+        {
+            await ReplyAsync(await _music.ShuffleAsync(Context.Guild));
+
+            var msg = await _music.QueueGetAsync(Context.Guild);
+            foreach (var msgSplit in msg.DiscordMessageSplit())
+            {
+                await ReplyAsync(msgSplit);
+            }
+        }
 
         [Command("Volume")]
         [Summary("Ustaw głośność")]

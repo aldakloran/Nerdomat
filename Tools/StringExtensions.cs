@@ -8,10 +8,15 @@ namespace Nerdomat.Tools
 {
     public static class StringExtensions
     {
-        public static string SongTitleTrim(this string songTitle)
-            => songTitle.Length > 55
-                    ? $"{songTitle.Substring(0, 55)} [...]"
-                    : songTitle;
+        public static string SongDurationToString(this TimeSpan duration)
+            => duration.Hours > 0
+                ? duration.ToString(@"hh\:mm\:ss")
+                : duration.ToString(@"mm\:ss");
+
+        public static string SongTitleTrim(this string songTitle, int length = 55)
+            => songTitle.Length > length
+                ? $"{songTitle.Substring(0, length)} [...]"
+                : songTitle;
 
 
         //trim beggining and end of string and return it as ref string

@@ -89,12 +89,12 @@ namespace Nerdomat.Services
                 if (_player.PlayerState == Victoria.Enums.PlayerState.Playing)
                 {
                     _player.Queue.Enqueue(track);
-                    sb.AppendLine($"Dodano do kolejki: {track.Title.SongTitleTrim()} ({(track.Duration.Hours > 0 ? track.Duration.ToString(@"hh\:mm\:ss") : track.Duration.ToString(@"mm\:ss"))})");
+                    sb.AppendLine($"Dodano do kolejki: {track.Title.SongTitleTrim()} ({track.Duration.SongDurationToString()})");
                 }
                 else
                 {
                     await _player.PlayAsync(track);
-                    sb.AppendLine($"Teraz odtwarzane: {track.Title.SongTitleTrim()} ({(track.Duration.Hours > 0 ? track.Duration.ToString(@"hh\:mm\:ss") : track.Duration.ToString(@"mm\:ss"))})");
+                    sb.AppendLine($"Teraz odtwarzane: {track.Title.SongTitleTrim()} ({track.Duration.SongDurationToString()})");
                 }
             }
 
@@ -106,6 +106,8 @@ namespace Nerdomat.Services
             var _player = _lavaSocketClient.GetPlayer(guildId);
             if (_player is null)
                 return "Błąd odtwarzacza";
+
+            _player.Queue.Clear();
             await _player.StopAsync();
             return "Zatrzymano odtwarzanie";
         }
@@ -119,6 +121,16 @@ namespace Nerdomat.Services
             var oldTrack = _player.Track;
             await _player.SkipAsync();
             return $"Pominięto: {oldTrack.Title.SongTitleTrim()} \nTeraz odtwarzane: {_player.Track.Title.SongTitleTrim()}";
+        }
+
+        public async Task<string> ShuffleAsync(IGuild guildId)
+        {
+            var _player = _lavaSocketClient.GetPlayer(guildId);
+            if (_player is null)
+                return "Błąd odtwarzacza";
+
+            _player.Queue.Shuffle();
+            return "Przemieszano kolejkę";
         }
 
         public async Task<string> SetVolumeAsync(ushort vol, IGuild guildId)
@@ -182,11 +194,12 @@ namespace Nerdomat.Services
 
                 var counter = 1;
                 var sb = new StringBuilder();
-                sb.AppendLine("Aktualna kolejka to:".Decorate(Decorator.Underline_bold));
-                sb.AppendLine($"\t{counter++}. {_player.Track.Title.SongTitleTrim()}".Decorate(Decorator.Bold_Italics));
+                var totalTime = _player.Queue.Aggregate(_player.Track.Duration, (sum, nextTime) => sum + nextTime.Duration);
+                sb.AppendLine($"Aktualna kolejka to ({totalTime.SongDurationToString()}):".Decorate(Decorator.Underline_bold));
+                sb.AppendLine($"\t{counter++}. {_player.Track.Title.SongTitleTrim()} ({_player.Track.Duration.SongDurationToString()})".Decorate(Decorator.Bold_Italics));
 
                 foreach (var track in _player.Queue)
-                    sb.AppendLine($"\t{counter++}. {track.Title.SongTitleTrim()}".Decorate(Decorator.Italics));
+                    sb.AppendLine($"\t{counter++}. {track.Title.SongTitleTrim()} ({track.Duration.SongDurationToString()})".Decorate(Decorator.Italics));
 
                 return sb.ToString();
             });
@@ -255,7 +268,7 @@ namespace Nerdomat.Services
 
             if (searchResoult.LoadStatus == Victoria.Enums.LoadStatus.PlaylistLoaded && !string.IsNullOrWhiteSpace(searchResoult.Playlist.Name))
             {
-                foreach (var song in searchResoult.Tracks)
+                foreach (var song in searchResoult.Tracks.OrderBy(x => Guid.NewGuid()))
                 {
                     yield return song;
                 }
@@ -288,7 +301,7 @@ namespace Nerdomat.Services
             }
 
             await args.Player.PlayAsync(track);
-            await player.TextChannel.SendMessageAsync($"Teraz odtwarzane: {track.Title.SongTitleTrim()}");
+            await player.TextChannel.SendMessageAsync($"Teraz odtwarzane: {track.Title.SongTitleTrim()} ({track.Duration.SongDurationToString()})");
         }
 
         private async Task LogAsync(LogMessage logMessage)

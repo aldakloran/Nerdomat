@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -8,20 +7,19 @@ using Microsoft.Extensions.Options;
 using Nerdomat.Interfaces;
 using Nerdomat.Models;
 using Nerdomat.Tools;
-using Newtonsoft.Json;
 
 namespace Nerdomat.Modules
 {
-    [ModuleActive(false)]
-    [ModuleName("Test")]
-    public class TestModule : ModuleBase<SocketCommandContext>
+    [ModuleActive(true)]
+    [ModuleName("Inne")]
+    public class OtherModule : ModuleBase<SocketCommandContext>
     {
         private readonly IOptionsMonitor<Config> _config;
         private readonly DiscordSocketClient _discord;
         private readonly IServiceProvider _services;
         private readonly IWarcraftLogsService _warcraftLogsService;
 
-        public TestModule(IServiceProvider services, IOptionsMonitor<Config> config)
+        public OtherModule(IServiceProvider services, IOptionsMonitor<Config> config)
         {
             _discord = services.GetRequiredService<DiscordSocketClient>();
             _warcraftLogsService = services.GetRequiredService<IWarcraftLogsService>();
@@ -29,15 +27,17 @@ namespace Nerdomat.Modules
             _config = config;
         }
 
-        [Command("test")]
-        [Summary("Kontener na randomowe testy")]
-        public async Task Test()
+        [Command("roll")]
+        [Summary("Losuje liczbę od 0 do max (domyślnie 100)")]
+        public async Task Roll(int max = 100)
         {
-            var players = await _warcraftLogsService.GetFullFight("1J3rRY6L7Ng4zAyv");
-            foreach (var player in players.Friendlies)
-            {
-                await Context.Channel.SendMessageAsync($"{player.Name} {player.Server} {player.Type}");
-            }
+            var rng = new Random();
+            await ReplyAsync($"{rng.Next(0, Math.Abs(max))} (0-{Math.Abs(max)})");
         }
+
+        [Command("ping")]
+        [Summary("Podaje latency do servera discorda")]
+        public async Task Ping()
+            => await ReplyAsync($"Latency: ({_discord?.Latency ?? 0}ms)".Decorate(Decorator.Block_code));
     }
 }

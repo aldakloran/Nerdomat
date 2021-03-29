@@ -13,6 +13,7 @@ namespace Nerdomat.Interfaces
         Task<string> PlayAsync(string query, IGuild guildId);
         Task<string> StopAsync(IGuild guildId);
         Task<string> SkipAsync(IGuild guildId);
+        Task<string> ShuffleAsync(IGuild guildId);
         Task<string> SetVolumeAsync(ushort vol, IGuild guildId);
         Task<string> PauseOrResumeAsync(IGuild guildId);
         Task<string> ResumeAsync(IGuild guildId);

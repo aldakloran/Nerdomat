@@ -94,8 +94,23 @@ namespace Nerdomat.Modules
                 emb.Footer = footer;
                 emb.AddField(container);
 
-                await usr.SendMessageAsync(string.Empty, false, emb.Build());
-                await Context.Channel.SendMessageAsync($"Wysłano wiadomość z danymi dostępowymi do: {_discordContext.GetUserNickname(usr.Id)}");
+                try
+                {
+                    await usr.SendMessageAsync(string.Empty, false, emb.Build());
+                    await Context.Channel.SendMessageAsync($"Wysłano wiadomość z danymi dostępowymi do: {_discordContext.GetUserNickname(usr.Id)}");
+                }
+                catch(Discord.Net.HttpException ex)
+                {
+                    if(ex.DiscordCode == 50007)
+                        await Context.Channel.SendMessageAsync($"Użytkownik nie zezwala na DM: {_discordContext.GetUserNickname(usr.Id)}");
+                    else
+                        await Context.Channel.SendMessageAsync($"Błąd doscorda: {_discordContext.GetUserNickname(usr.Id)} ([{ex.DiscordCode}] - {ex.Message})");
+                }
+                catch(Exception ex)
+                {
+                    await Context.Channel.SendMessageAsync($"Błąd bota: {_discordContext.GetUserNickname(usr.Id)} ({ex.Message})");
+                }
+                
             }
         }
 
